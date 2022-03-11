@@ -14,7 +14,7 @@ def generate_logo(__show__, __xpos__, __ypos__, __start__):
         bg_color_rgb = tuple(int(__show__['background_color'][i:i + 2], 16) for i in (0, 2, 4))
         bg_logo_clip = ColorClip(size=(LOGO_W, LOGO_H), color=bg_color_rgb)
 
-    mask_clip = ImageClip("source/mask2.png", ismask=True)
+    mask_clip = ImageClip("source/mask.png", ismask=True)
 
     logo_clip = ImageClip(__show__['logo_link'])
     logo_clip = logo_clip.resize(width=80)
@@ -71,8 +71,6 @@ DAY = get_day()
 
 day_txt_clip = TextClip(DAY, fontsize=70, color='white', font='Gotham-Bold').set_position(
     ('center', SHOW_POS_Y)).set_start(START)
-
-START += 0.2
 
 layer_list = [bg_clip, day_txt_clip]
 
