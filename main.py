@@ -1,5 +1,4 @@
 from moviepy.editor import *
-from PIL import ImageColor
 import requests
 import json
 from datetime import datetime
@@ -20,8 +19,8 @@ def generate_logo(__show__, __xpos__, __ypos__, __start__):
     logo_clip = logo_clip.resize(width=LOGO_W - 20)
 
     logo = CompositeVideoClip([bg_logo_clip.set_mask(mask_clip),
-                               logo_clip.set_position("center")]) \
-        .set_position((__xpos__, __ypos__)).set_start(__start__).set_duration(bg_duration - __start__).crossfadein(0.5)
+                               logo_clip.set_position("center")]).set_position((__xpos__, __ypos__)).set_start(
+        __start__).set_duration(bg_duration - __start__).crossfadein(0.5)
 
     return logo
 
@@ -49,6 +48,16 @@ def get_day():
     return days[datetime.today().weekday()]
 
 
+def notify(path_video):
+    chat_ids = ["96230957"]
+    telegram_base_url = 'https://api.telegram.org/bot{}/'.format(BOT_TOKEN)
+
+    for telegram_id in chat_ids:
+        params = {'chat_id': telegram_id, 'video': path_video, 'parse_mode': 'markdown'}
+        resp = requests.post('{}sendVideo'.format(telegram_base_url), params=params)
+        print(resp.content)
+
+
 # get from poliradio.it the list of shows of the day
 response = requests.get("https://www.poliradio.it/api/todayShows.php")
 show_list = json.loads(response.content)
@@ -60,17 +69,19 @@ bg_clip = VideoFileClip(bg_filename)
 BG_W, BG_H = bg_clip.size
 bg_duration = bg_clip.duration
 
+BOT_TOKEN = '802452938:AAGmWxqubpQ_uTJOuwyY7bqE-0XBBhp-N5Q'
+
 LOGO_W = 120
 LOGO_H = 120
 
 SHOW_POS_Y = int(BG_H / 4) - 50
-SHOW_POS_X = int(BG_W / 6)
+SHOW_POS_X = int(BG_W / 6) - 30
 START = 2.7
 
 DAY = get_day()
 
 day_txt_clip = TextClip(DAY, fontsize=70, color='white', font='Gotham-Bold').set_position(
-    ('center', SHOW_POS_Y)).set_start(START)
+    ('center', SHOW_POS_Y)).set_start(START).set_duration(bg_duration - START).crossfadein(0.5)
 
 layer_list = [bg_clip, day_txt_clip]
 
@@ -86,4 +97,6 @@ for show in show_list:
 
 final = CompositeVideoClip(layer_list)
 
-final.set_duration(bg_duration).write_videofile("out.mp4")
+final.set_duration(bg_duration).write_videofile("out_video.mp4", threads=4, codec="libx264", audio_codec="aac")
+
+#notify("out_video.mp4")
