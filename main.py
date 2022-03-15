@@ -19,7 +19,7 @@ def generate_logo(__show__, __xpos__, __ypos__, __start__):
     logo_clip = logo_clip.resize(width=LOGO_W - 20)
 
     logo = CompositeVideoClip([bg_logo_clip.set_mask(mask_clip),
-                               logo_clip.set_position("center")]).set_position((__xpos__, __ypos__)).set_start(
+                               logo_clip.set_position("center")]).set_mask(mask_clip).set_position((__xpos__, __ypos__)).set_start(
         __start__).set_duration(bg_duration - __start__).crossfadein(0.5)
 
     return logo
@@ -46,16 +46,6 @@ def generate_title_txt(__show__, __xpos__, __ypos__, __start__):
 def get_day():
     days = ["LUNEDI'", "MARTEDI'", "MERCOLEDI'", "GIOVEDI'", "VENERDI'", "SABATO", "DOMENICA"]
     return days[datetime.today().weekday()]
-
-
-def notify(path_video):
-    chat_ids = ["96230957"]
-    telegram_base_url = 'https://api.telegram.org/bot{}/'.format(BOT_TOKEN)
-
-    for telegram_id in chat_ids:
-        params = {'chat_id': telegram_id, 'video': path_video, 'parse_mode': 'markdown'}
-        resp = requests.post('{}sendVideo'.format(telegram_base_url), params=params)
-        print(resp.content)
 
 
 # get from poliradio.it the list of shows of the day
@@ -98,5 +88,3 @@ for show in show_list:
 final = CompositeVideoClip(layer_list)
 
 final.set_duration(bg_duration).write_videofile("out_video.mp4", threads=4, codec="libx264", audio_codec="aac")
-
-#notify("out_video.mp4")
