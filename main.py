@@ -59,8 +59,6 @@ bg_clip = VideoFileClip(bg_filename)
 BG_W, BG_H = bg_clip.size
 bg_duration = bg_clip.duration
 
-BOT_TOKEN = '802452938:AAGmWxqubpQ_uTJOuwyY7bqE-0XBBhp-N5Q'
-
 LOGO_W = 120
 LOGO_H = 120
 
