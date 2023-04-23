@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from moviepy.editor import *
 import requests
 import json
@@ -19,7 +21,8 @@ def generate_logo(__show__, __xpos__, __ypos__, __start__):
     logo_clip = logo_clip.resize(width=LOGO_W - 20)
 
     logo = CompositeVideoClip([bg_logo_clip.set_mask(mask_clip),
-                               logo_clip.set_position("center")]).set_mask(mask_clip).set_position((__xpos__, __ypos__)).set_start(
+                               logo_clip.set_position("center")]).set_mask(mask_clip).set_position(
+        (__xpos__, __ypos__)).set_start(
         __start__).set_duration(bg_duration - __start__).crossfadein(0.5)
 
     return logo
@@ -35,7 +38,7 @@ def generate_time_txt(__show__, __xpos__, __ypos__, __start__):
 
 
 def generate_title_txt(__show__, __xpos__, __ypos__, __start__):
-    title_clip = TextClip(__show__['nome'], fontsize=50, color='white', font='Gotham-Medium')
+    title_clip = TextClip(__show__['nome'], fontsize=50, color='white', font='Gotham-Medium', method='caption', align='West', size=(500, 120))
 
     title = CompositeVideoClip([title_clip]).set_position((__xpos__ + 330, __ypos__ - 1)).set_start(
         __start__).set_duration(bg_duration - __start__).crossfadein(0.5)
@@ -44,7 +47,7 @@ def generate_title_txt(__show__, __xpos__, __ypos__, __start__):
 
 
 def get_day():
-    days = ["LUNEDI'", "MARTEDI'", "MERCOLEDI'", "GIOVEDI'", "VENERDI'", "SABATO", "DOMENICA"]
+    days = ["LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ", "SABATO", "DOMENICA"]
     return days[datetime.today().weekday()]
 
 
@@ -79,7 +82,7 @@ for show in show_list:
     layer_list.append(generate_logo(show, SHOW_POS_X, SHOW_POS_Y, START))
     SHOW_POS_Y += 40
     layer_list.append(generate_time_txt(show, SHOW_POS_X, SHOW_POS_Y, START))
-    layer_list.append(generate_title_txt(show, SHOW_POS_X, SHOW_POS_Y, START))
+    layer_list.append(generate_title_txt(show, SHOW_POS_X, SHOW_POS_Y-36, START))
     SHOW_POS_Y += 150
     START += 0.2
 
